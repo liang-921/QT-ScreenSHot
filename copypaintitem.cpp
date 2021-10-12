@@ -20,8 +20,6 @@ void CopyPaintItem::save(QString filepath)
     for(int i=6;i<filepath.size();i++){
         path.push_back(filepath[i]);
     }
-    saveCutImg();
-//    m_image.save("/root/1.jpg",nullptr,-1);
     m_image.save(path,nullptr,-1);
 }
 
@@ -140,11 +138,4 @@ void CopyPaintItem::saveDoodleElement(QPainter *painter)
         painter->setPen(doodleElement->m_pen);
         painter->drawLines(doodleElement->m_lines);
     }
-}
-
-void CopyPaintItem::saveCutImg()
-{
-    QRectF rect;
-    rect=m_rects[m_rects.size()-1]->m_cutRect;
-    m_image=m_image.copy(-rect.x(),-rect.y(),rect.width(),rect.height());
 }

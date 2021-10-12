@@ -13,7 +13,6 @@
 #include <QPointF>
 #include <QLineF>
 #include <QPen>
-#include <QRectF>
 
 //文字编辑
 class TextElement
@@ -114,19 +113,6 @@ public:
     ~Doodle()    {}
     QVector<QLineF> m_lines;
     QPen m_pen;
-};
-
-//裁剪
-class CutRectElement
-{
-public:
-    CutRectElement()   {    }
-    CutRectElement(const QRectF &rect)
-        :m_cutRect(rect)    {    }
-
-    ~CutRectElement() {   }
-
-    QRectF m_cutRect;
 };
 
 #endif // ELEMENTGROUP_H

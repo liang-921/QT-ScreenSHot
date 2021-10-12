@@ -8,7 +8,7 @@ class MyLabel : public QLabel
 {
     Q_OBJECT
 public:
-    MyLabel();
+    MyLabel(QWidget *parent);
 
     void setimagetolabel(QPixmap pixmap);
 private:
@@ -17,7 +17,7 @@ private:
     //鼠标释放事件
     void mouseReleaseEvent(QMouseEvent *event);
     //鼠标按下事件
-    void mousePressEvent(QMouseEvent *);
+    void mousePressEvent(QMouseEvent *event);
 
 private:
     QPoint m_zPos;

@@ -21,6 +21,7 @@ int main(int argc, char *argv[]){
     engine.rootContext()->setContextProperty("fullCut",fullCut);
     engine.addImageProvider(QLatin1String("screen"),fullCut->imgProvider);
 
+
     //将涂鸦这个类注册到qml中
     qmlRegisterType<PaintedItem>("qml.Controls", 1, 0, "APaintedItem");
 

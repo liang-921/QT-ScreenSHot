@@ -46,8 +46,6 @@ signals:
     void signalCompleteCapture(QPixmap captureImage);
     //通知连续截图完成
     void signalCompleteContinue();
-    //通知钉图完成
-    void signalCompleteNail();
 
 private:
     void initWindow();

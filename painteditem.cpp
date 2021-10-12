@@ -19,7 +19,9 @@ PaintedItem::PaintedItem(QQuickItem *parent)
     , m_bMoved(false)
 {
     m_textPen.setWidth(1);
+    m_mysource="file:///root/1.jpg";
 
+    m_myImage.load("/root/1.jpg");
     setAcceptedMouseButtons(Qt::LeftButton);
 //    setAcceptHoverEvents(true);
     connect(this,&PaintedItem::textEditChanged,this,&PaintedItem::on_textEdit_changed);
@@ -68,6 +70,7 @@ void PaintedItem::undo()
         }
         m_sequence.removeLast();
     }
+
     emit undoSignal();
     update();
 }
@@ -77,8 +80,6 @@ void PaintedItem::save(QString  filePath)
 //    copyPainter=new CopyPaintItem();
 //    copyPainter->CopyPaint(m_elements,m_myImage,m_textElements);
     CopyPaintItem* copyPainter=new CopyPaintItem();
-    m_mysource="file:///root/1.jpg";
-    m_myImage.load("/root/1.jpg");
     copyPainter->m_image=m_myImage;
     //文字
     copyPainter->m_textElements=m_textElements;
@@ -90,8 +91,6 @@ void PaintedItem::save(QString  filePath)
     copyPainter->m_lineElements=m_lineElements;
     //涂鸦
     copyPainter->m_doodleElements=m_doodleElements;
-    //剪切
-    copyPainter->m_rects=m_rects;
     copyPainter->save(filePath);
 }
 
@@ -132,8 +131,6 @@ void PaintedItem::mousePressEvent(QMouseEvent *event)
         }else if(m_flag==5){
             doodlePressEvent();//涂鸦
             m_sequence.push_back(5);
-        }else if(m_flag==6){   //剪切
-            m_sequence.push_back(6);
         }
         //设置起始点
         qDebug()<<"event->pos"<<event->pos().x()<<"+"<<event->pos().y();
@@ -386,43 +383,4 @@ void PaintedItem::lineMoveEvent()
 void PaintedItem::doodleMoveEvent()
 {
     m_doodleElement->m_lines.push_back(QLineF(m_startPoint,m_lastPoint));
-}
-
-void PaintedItem::sendRectNumber(int x,int y,int width,int height)
-{
-    m_rects.push_back(new CutRectElement(QRectF(x,y,width,height)));
-}
-
-QRectF PaintedItem::undo_backRect(QString flag)
-{
-    QRectF rect;
-    if(m_rects.size()!=0){
-    if(flag=="clear"){
-        rect=m_rects[0]->m_cutRect;
-        m_rects.clear();
-        return rect;
-    }else if(flag=="undo"){
-        if(m_rects.size()>1){
-            delete m_rects.takeLast();
-         }
-        rect=m_rects[m_rects.size()-1]->m_cutRect;
-        return rect;
-    }
-    }
-}
-
-void PaintedItem::pressCutSequence()
-{
-        m_sequence.push_back(6);
-}
-
-bool PaintedItem::isdoCut()
-{
-    if(m_sequence.size()!=0){
-    if(m_sequence[m_sequence.size()-1]==6){
-        qDebug()<<"m_sequence";
-        return true;
-    }
-    }
-    return false;
 }

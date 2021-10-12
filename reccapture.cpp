@@ -296,11 +296,11 @@ void RecCapture::keyPressEvent(QKeyEvent *event)
     if (event->key() == Qt::Key_Enter || event->key() == Qt::Key_Return)
     {
         QApplication::clipboard()->setImage(m_capturePixmap.toImage());
-        QImage img=m_capturePixmap.toImage();
-        img.save("/root/1.jpg",nullptr,100);
 
         emit signalCompleteCapture(m_capturePixmap);
+        QImage img=m_capturePixmap.toImage();
 
+        img.save("/root/1.jpg",nullptr,100);
         close();
     }
 
@@ -344,11 +344,12 @@ void RecCapture::keyPressEvent(QKeyEvent *event)
     //Tab进行钉图操作
     if(event->key() == Qt::Key_Tab){
 
-        labelimage=new MyLabel();
+        labelimage=new MyLabel(this);
 
         if(!m_capturePixmap.toImage().isNull()){
-            qDebug()<<"所截的图不是空的!!";
-            qDebug()<<"宽："<<m_capturePixmap.width()<<"高："<<m_capturePixmap.height();
+            qDebug()<<"所截的图不是空的。。。";
+            qDebug()<<"宽："<<m_capturePixmap.width();
+            qDebug()<<"高："<<m_capturePixmap.height();
         }
         labelimage->setimagetolabel(m_capturePixmap);
         labelimage->setFixedSize(m_capturePixmap.width(),m_capturePixmap.height());
@@ -360,8 +361,6 @@ void RecCapture::keyPressEvent(QKeyEvent *event)
         update();
         //重新定义当前截取图片的状态
         m_currentCaptureState = InitCapture;
-
-        emit signalCompleteNail();
     }
 }
 

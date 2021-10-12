@@ -70,7 +70,6 @@ ApplicationWindow{
                             btn.text="注释完成"
 
                         }else{
-
                             btn.text="注释"
                             btn_1.enabled=true
                             btn_2.enabled=true
