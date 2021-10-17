@@ -1,24 +1,17 @@
 #include "mylabel.h"
 
-MyLabel::MyLabel(QWidget *parent)
-//    :QLabel(parent)
+MyLabel::MyLabel()
 {
     Qt::WindowFlags nType = Qt::FramelessWindowHint | Qt::WindowStaysOnTopHint;
     setWindowFlags(nType);
-
-//    QWidget::setMask(QRegion(childrenRegion()));
-//    setAttribute(Qt::WA_TransparentForMouseEvents,true);
-//    setWindowFlags(Qt::Tool);
-//    setAttribute(Qt::WA_TranslucentBackground,true);
-
 }
 
 void MyLabel::setimagetolabel(QPixmap pixmap)
 {
     setPixmap(pixmap);
     setScaledContents(true);
-
 }
+
 //当鼠标拖动时 调用move函数，来实现窗口的移动
 void MyLabel::mouseMoveEvent(QMouseEvent *event)
 {
@@ -41,7 +34,7 @@ void MyLabel::mousePressEvent(QMouseEvent *event)
 }
 
 //当拖动结束后，鼠标释放，不再按下，这时候将上次鼠标按下的坐标赋值置空。
-void MyLabel::mouseReleaseEvent(QMouseEvent *event)
+void MyLabel::mouseReleaseEvent(QMouseEvent *)
 {
     m_zPos = QPoint();
 }

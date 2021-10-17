@@ -13,13 +13,16 @@ CopyPaintItem::CopyPaintItem(QQuickItem *parent)
 
 void CopyPaintItem::save(QString filepath)
 {
+    qDebug()<<"qml中传过来的路径是"<<filepath;
     copyPainter=new QPainter(&m_image);
     copyPainter->setRenderHint(QPainter::Antialiasing,true);
     paintEvent(nullptr);
     QString path;
-    for(int i=6;i<filepath.size();i++){
+    for(int i=7;i<filepath.size();i++){
         path.push_back(filepath[i]);
     }
+    saveCutImg();
+    qDebug()<<"-----------------c++中所要保存的路径是："<<path;
     m_image.save(path,nullptr,-1);
 }
 
@@ -137,5 +140,14 @@ void CopyPaintItem::saveDoodleElement(QPainter *painter)
         Doodle* doodleElement=m_doodleElements[i];
         painter->setPen(doodleElement->m_pen);
         painter->drawLines(doodleElement->m_lines);
+    }
+}
+
+void CopyPaintItem::saveCutImg()
+{
+    QRectF rect;
+    if(m_rects.size()>0){
+        rect=m_rects[m_rects.size()-1]->m_cutRect;
+        m_image=m_image.copy(-rect.x(),-rect.y(),rect.width(),rect.height());
     }
 }

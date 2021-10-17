@@ -15,16 +15,21 @@
         <file>icons/fill-color.png</file>
         <file>icons/fontsize.png</file>
         <file>icons/kdenlive-composite.png</file>
-        <file>icons/mouse.png</file>
         <file>icons/paint.png</file>
         <file>icons/rectangle.png</file>
         <file>icons/shapes.svg</file>
         <file>icons/text.svg</file>
         <file>icons/textcolor.png</file>
         <file>icons/tools-wizard.svg</file>
-        <file>icons/view-barcode-qr.svg</file>
         <file>icons/width.png</file>
         <file>Content2.qml</file>
         <file>icons/undo.png</file>
+        <file>CutImageRect.qml</file>
+        <file>CutBorder.qml</file>
+        <file>FocusRect.qml</file>
+        <file>RectMove.qml</file>
+        <file>icons/cut.png</file>
+        <file>icons/line.png</file>
+        <file>icons/clear.png</file>
     </qresource>
 </RCC>

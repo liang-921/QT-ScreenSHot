@@ -10,11 +10,10 @@ CONFIG += c++17
 SOURCES += \
     copypaintitem.cpp \
     fullcapture.cpp \
-    imageprovider.cpp \
     main.cpp \
     mylabel.cpp \
     painteditem.cpp \
-    reccapture.cpp \
+    reccapture.cpp
 
 RESOURCES += qml.qrc
 
@@ -36,5 +35,6 @@ HEADERS += \
     imageprovider.h \
     mylabel.h \
     painteditem.h \
-    reccapture.h \
+    reccapture.h
+
 

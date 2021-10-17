@@ -5,19 +5,11 @@ import QtQuick.Layouts 1.3
 Item {
     id: content
 
-    property bool isCapture: false
-
-    function delay(delayTime, cb) {
-        timer.interval = delayTime;
-        timer.repeat = false;
-        timer.triggered.connect(cb);
-        timer.start();
-    }
-
     function selectImage(){
         img.source = arguments[0]
         console.log("来源是：" + img.source)
     }
+
 
     Image {
         id: img
@@ -27,7 +19,8 @@ Item {
         anchors.right: rec2.left
         anchors.rightMargin: 20
         anchors.leftMargin: 20
-        cache: true
+        cache: false
+        source: "file:///tmp/1.jpg"
         fillMode: Image.PreserveAspectFit
     }
 
@@ -36,7 +29,6 @@ Item {
         onCallImgChanged: {
             img.source = ""
             img.source = "image://screen"
-            console.log(img.source)
         }
     }
 
@@ -158,6 +150,19 @@ Item {
 
     Timer{
         id:timer
+        //triggered即使在触发一次之后回调也会保持与信号的连接。
+        //这意味着如果再次使用该延迟功能，定时器将再次触发所有连接的回调。所以你应该在触发后断开回调。
+        function setTimeout(cb, delayTime) {
+            timer.interval = delayTime;
+            timer.repeat = false;
+            timer.triggered.connect(cb);
+            timer.triggered.connect(function release () {
+                timer.triggered.disconnect(cb); // This is important
+                timer.triggered.disconnect(release); // This is important as well
+            });
+            timer.start();
+        }
+
     }
 
     Timer {
@@ -173,12 +178,8 @@ Item {
                 countDown.stop()
                 if(check_2.checked == true){
                     appRoot.hide()
-                    delay(200,function(){
-                        fullCut.startFullScreen()
-                    })
-                    delay(400,function(){
-                        appRoot.show()
-                    })
+                   timer.setTimeout(function(){ fullCut.startFullScreen() },500)
+                   timer.setTimeout(function(){ appRoot.show() },500)
                 }else{
                     fullCut.startFullScreen()
                 }
@@ -187,19 +188,15 @@ Item {
                 countDown.stop()
                 if(check_2.checked == true){
                     appRoot.hide()
-                    delay(500,function(){
-                        fullCut.startCaptureImage()
-                    })
+                    timer.setTimeout(function(){ fullCut.startRecCapture() },500)
                 }else{
-                    fullCut.startCaptureImage()
+                    fullCut.startRecCapture()
                 }
             } else if (spinBox.value < 1 && cbb.currentText === "连续截图") {
                 countDown.stop()
                 if(check_2.checked == true){
                     appRoot.hide()
-                    delay(500,function(){
-                        fullCut.startContinueCapture()
-                    })
+                     timer.setTimeout(function(){ fullCut.startContinueCapture() },500)
                 }else{
                     fullCut.startContinueCapture()
                 }
@@ -207,11 +204,18 @@ Item {
                 countDown.stop()
                 if(check_2.checked == true){
                     appRoot.hide()
-                    delay(500,function(){
-                        fullCut.startCaptureImage()
-                    })
+                    timer.setTimeout(function(){ fullCut.startNailCapture() },500)
                 }else{
-                    fullCut.startCaptureImage()
+                    fullCut.startNailCapture()
+                }
+            } else if(spinBox.value < 1 && cbb.currentText === "活动窗口"){
+                countDown.stop()
+                if(check_2.checked == true){
+                    appRoot.hide()
+                    fullCut.delay(500)
+                    fullCut.startActiveCapture()
+                }else{
+                    fullCut.startActiveCapture()
                 }
             }
         }
@@ -221,7 +225,6 @@ Item {
         target: fullCut
         onFinishCapture:{
             appRoot.showNormal()
-            console.log("显示隐藏当前窗口后 重新显示approot")
         }
     }
 

@@ -84,6 +84,12 @@ class PaintedItem : public QQuickPaintedItem
     Doodle *m_doodleElement;
     QVector<Doodle*> m_doodleElements;
 
+//    //剪切矩形
+//    CutRectElement* m_rectCut;
+    QVector<CutRectElement*> m_rects;
+//    QRectF *m_rect;
+//    QVector<QRectF*> m_rects;
+
     //当前所进行的编辑操作，1是文字，2是椭圆,3是矩形，4是直线,5是涂鸦
     int m_flag;
 
@@ -95,6 +101,15 @@ public:
     Q_INVOKABLE void clear();
     Q_INVOKABLE void undo();
     Q_INVOKABLE void save(QString filePath);
+
+    //设置剪切矩形
+    Q_INVOKABLE void sendRectNumber(int x,int y,int width,int height);
+    //undo或clear后，将图片恢复特定样子，flag为标志，"clear"为恢复为最开始大小和位置，“undo”恢复为最近一次大小和位置
+    Q_INVOKABLE QRectF undo_backRect(QString flag);
+    //如果是剪切操作向m_sequence里push_back(6),6表示剪切
+    Q_INVOKABLE void pressCutSequence();
+    //查看m_sequence里的最后一个值，如果是6,返回bool值true,否则返回false
+    Q_INVOKABLE bool isdoCut();
 
     //每次调用update()函数时就会调用paint函数进行画布的更新
     void paint(QPainter *painter);
@@ -311,7 +326,6 @@ protected:
     bool m_bEnabled;
     bool m_bPressed;
     bool m_bMoved;
-
     //进行保存操作的指针
 };
 

@@ -25,12 +25,14 @@ public:
     void saveRectElement(QPainter *painter);
     void saveLineElement(QPainter* painter);
     void saveDoodleElement(QPainter *painter);
+    void saveCutImg();
     QPainter *copyPainter;
     QVector<TextElement*> m_textElements;
     QVector<CircleElement*> m_circleElements;
     QVector<RectElement*> m_rectElements;
     QVector<LineElement*> m_lineElements;
     QVector<Doodle*> m_doodleElements;
+    QVector<CutRectElement*> m_rects;
     QImage m_image;
 };
 
