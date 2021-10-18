@@ -46,7 +46,7 @@ void PaintedItem::undo()
         if(i==1){
             if(m_textElements.size()>0){
                 m_textElements.takeLast();
-//                delete m_textElements.takeLast();
+                //                delete m_textElements.takeLast();
             }
         }else if(i==2){
             if(m_circleElements.size()>0){
@@ -62,7 +62,7 @@ void PaintedItem::undo()
             }
         }else if(i==5){
             if(m_doodleElements.size()>0){
-               delete m_doodleElements.takeLast();
+                delete m_doodleElements.takeLast();
             }
         }
         m_sequence.removeLast();
@@ -73,8 +73,8 @@ void PaintedItem::undo()
 
 void PaintedItem::save(QString  filePath)
 {
-//    copyPainter=new CopyPaintItem();
-//    copyPainter->CopyPaint(m_elements,m_myImage,m_textElements);
+    //    copyPainter=new CopyPaintItem();
+    //    copyPainter->CopyPaint(m_elements,m_myImage,m_textElements);
     CopyPaintItem* copyPainter=new CopyPaintItem();
     m_mysource="file:///tmp/1.jpg";
     m_myImage.load("/tmp/1.jpg");
@@ -155,7 +155,7 @@ void PaintedItem::mouseMoveEvent(QMouseEvent *event)
         if(m_flag==1){//如果是编辑文字
             textMoveEvent();
         }else if(m_flag==2){
-             circleMoveEvent();  //如果是画椭圆
+            circleMoveEvent();  //如果是画椭圆
         }else if(m_flag==3){
             rectMoveEvent();//画矩形
         }else if(m_flag==4){
@@ -294,7 +294,7 @@ void PaintedItem::circlePaintEvent(QPainter *painter)
             //椭圆要求在一个矩形区域内
             QRect rect(circleElement->m_startPoint,circleElement->m_endPoints[maxSize-1]);
             painter->drawEllipse(rect);
-//            painter->drawRect(rect);
+            //            painter->drawRect(rect);
         }
     }
 }
@@ -344,15 +344,15 @@ void PaintedItem::doodlePaintEvent(QPainter *painter)
 void PaintedItem::textMoveEvent()
 {
     if(m_startPoint.x()>m_lastPoint.x()&&m_startPoint.y()<m_lastPoint.y()){
-//            qDebug()<<"第二种情况";
+        //            qDebug()<<"第二种情况";
         QPoint p(m_lastPoint.x(),m_startPoint.y());
         setprintPoint(p);
     }else if(m_startPoint.x()<m_lastPoint.x()&&m_startPoint.y()>m_lastPoint.y()){
-//            qDebug()<<"第一种情况";
+        //            qDebug()<<"第一种情况";
         QPoint p(m_startPoint.x(),m_lastPoint.y());
         setprintPoint(p);
     }else if(m_startPoint.x()>m_lastPoint.x()&&m_startPoint.y()>m_lastPoint.y()){
-//            qDebug()<<"第三种情况";
+        //            qDebug()<<"第三种情况";
         QPoint p(m_lastPoint.x(),m_lastPoint.y());
         setprintPoint(p);
     }else{
@@ -396,32 +396,34 @@ QRectF PaintedItem::undo_backRect(QString flag)
 {
     QRectF rect;
     if(m_rects.size()!=0){
-    if(flag=="clear"){
-        rect=m_rects[0]->m_cutRect;
-        m_rects.remove(1,m_rects.size()-1);
-        return rect;
-    }else if(flag=="undo"){
-        if(m_rects.size()>1){
-            delete m_rects.takeLast();
-         }
-        rect=m_rects[m_rects.size()-1]->m_cutRect;
-        return rect;
-    }
+        if(flag=="clear"){
+            rect=m_rects[0]->m_cutRect;
+            m_rects.remove(1,m_rects.size()-1);
+            return rect;
+        }else if(flag=="undo"){
+            if(m_rects.size()>1){
+                delete m_rects.takeLast();
+            }
+            rect=m_rects[m_rects.size()-1]->m_cutRect;
+            return rect;
+        }
+
     }
 }
 
 void PaintedItem::pressCutSequence()
 {
-        m_sequence.push_back(6);
+    m_sequence.push_back(6);
 }
 
 bool PaintedItem::isdoCut()
 {
     if(m_sequence.size()!=0){
-    if(m_sequence[m_sequence.size()-1]==6){
-        qDebug()<<"m_sequence";
-        return true;
-    }
+        if(m_sequence[m_sequence.size()-1]==6){
+            qDebug()<<"m_sequence";
+            return true;
+        }
     }
     return false;
 }
+

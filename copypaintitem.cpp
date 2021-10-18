@@ -17,6 +17,7 @@ void CopyPaintItem::save(QString filepath)
     copyPainter=new QPainter(&m_image);
     copyPainter->setRenderHint(QPainter::Antialiasing,true);
     paintEvent(nullptr);
+
     QString path;
     for(int i=7;i<filepath.size();i++){
         path.push_back(filepath[i]);
@@ -34,6 +35,7 @@ void CopyPaintItem::paint(QPainter *painter)
 
 void CopyPaintItem::paintEvent(QEvent *event)
 {
+    Q_UNUSED(event);
     saveTextElement(copyPainter);
     saveCircleElement(copyPainter);
     saveRectElement(copyPainter);

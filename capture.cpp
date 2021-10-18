@@ -1,15 +1,15 @@
-#include "fullcapture.h"
-#include <QGuiApplication>
+#include "capture.h"
 #include <QImage>
 #include <QWindow>
 #include <QApplication>
 #include <QScreen>
 #include <QDebug>
+#include <QClipboard>
 #include <string>
 #include <iostream>
 #include <stdio.h>
 
-FullCapture::FullCapture(QMainWindow *parent)
+Capture::Capture(QMainWindow *parent)
     :QMainWindow(parent)
 {
     imgProvider=new ImageProvider();
@@ -17,7 +17,7 @@ FullCapture::FullCapture(QMainWindow *parent)
 }
 
 //开始活动窗口截图
-void FullCapture::startActiveCapture()
+void Capture::startActiveCapture()
 {
 
     //得到窗口的wid,string类型的16进制
@@ -45,7 +45,7 @@ void FullCapture::startActiveCapture()
     emit finishCapture();
 }
 
-std::string FullCapture::exec(const char *cmd)
+std::string Capture::exec(const char *cmd)
 {
     FILE* pipe = popen(cmd, "r");
     if (!pipe) return "ERROR";
@@ -53,32 +53,28 @@ std::string FullCapture::exec(const char *cmd)
     std::string result = "";
     while(!feof(pipe)) {
         if(fgets(buffer, 128, pipe) != NULL)
-                result += buffer;
+            result += buffer;
     }
     pclose(pipe);
     return result;
 }
 
 //开始全屏截图
-void FullCapture::startFullScreen()
+void Capture::startFullScreen()
 {
     QPixmap pixmap;
     QScreen *screen=QApplication::primaryScreen();
-
-    this->setCursor(Qt::ArrowCursor);  //显示正常鼠标
-
     pixmap=screen->grabWindow(0);
 
-//    pixmap=screen->grabWindow(71303186);
     imgProvider->img=pixmap.toImage();
-
     QImage img=pixmap.toImage();
     img.save("/tmp/1.jpg");
+
 
     emit callImgChanged();
 }
 
-void FullCapture::cutRecScreen(QPixmap pixmap)
+void Capture::cutScreen(QPixmap pixmap)
 {
 
     imgProvider->img=pixmap.toImage();
@@ -86,50 +82,86 @@ void FullCapture::cutRecScreen(QPixmap pixmap)
     QImage img=pixmap.toImage();
     img.save("/tmp/1.jpg");
 
-    //发送信号 将矩形截取的图片在姐妹显示
+    //发送信号 将矩形截取的图片在界面显示
     emit callImgChanged();
     //发送信号 告知qml矩形截屏结束
     emit finishCapture();
 }
 
-void FullCapture::cutContinueScreen()
+void Capture::cutNull()
 {
-    //发送信号 告知qml连续截屏结束
+    //发送信号 告知qml截屏结束
+    //或 不返回图片给界面
     emit finishCapture();
 }
 
-void FullCapture::cutNailScreen()
+void Capture::cutNailScreen(QPixmap pixmap)
 {
+    m_nailImage=new MyLabel();
+
+    if(!pixmap.toImage().isNull()){
+        qDebug()<<"所截的图不是空的!!";
+        qDebug()<<"宽："<<pixmap.width()<<"高："<<pixmap.height();
+    }
+
+    m_nailImage->setimagetolabel(pixmap);
+    m_nailImage->setFixedSize(pixmap.width(),pixmap.height());
+
+    //钉在桌面
+    m_nailImage->show();
+
     //发送信号 告知qml钉图结束
     emit finishCapture();
 }
 
 //开始矩形截图
-void FullCapture::startRecCapture()
+void Capture::startRecCapture()
 {
     qDebug()<<"开始矩形截图";
     m_recCapture = new RecCapture();
     connect(m_recCapture,SIGNAL(signalCompleteCapture(QPixmap)),
-            this,SLOT(cutRecScreen(QPixmap)));
+            this,SLOT(cutScreen(QPixmap)));
+    connect(m_recCapture,SIGNAL(signalNull()),
+            this,SLOT(cutNull()));
     m_recCapture->show();
 }
 
 //开始连续截图
-void FullCapture::startContinueCapture()
+void Capture::startContinueCapture()
 {
     m_recCapture=new RecCapture;
     connect(m_recCapture,SIGNAL(signalCompleteContinue()),
-            this,SLOT(cutContinueScreen()));
+            this,SLOT(cutNull()));
+    connect(m_recCapture,SIGNAL(signalNull()),
+            this,SLOT(cutNull()));
     m_recCapture->show();
 
 }
 
 //开始钉图
-void FullCapture::startNailCapture()
+void Capture::startNailCapture()
 {
     m_recCapture=new RecCapture;
-    connect(m_recCapture,SIGNAL(signalCompleteNail()),
-            this,SLOT(cutNailScreen()));
+    connect(m_recCapture,SIGNAL(signalCompleteCapture(QPixmap)),
+            this,SLOT(cutNailScreen(QPixmap)));
+    connect(m_recCapture,SIGNAL(signalNull()),
+            this,SLOT(cutNull()));
     m_recCapture->show();
+}
+
+void Capture::startFreeCapture()
+{
+    m_freeCapture=new FreeCapture;
+    connect(m_freeCapture,SIGNAL(signalCompleteCapture(QPixmap)),
+            this,SLOT(cutScreen(QPixmap)));
+    m_freeCapture->show();
+}
+
+void Capture::copytoClip()
+{
+
+    QImage img;
+    img.load("/tmp/1.jpg");
+    QApplication::clipboard()->setImage(img);
 }
 

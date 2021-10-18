@@ -48,6 +48,8 @@ signals:
     void signalCompleteContinue();
     //通知钉图完成
     void signalCompleteNail();
+    //通知放弃截取图片
+    void signalNull();
 
 private:
     void initWindow();

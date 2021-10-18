@@ -290,6 +290,7 @@ public slots:
     //当文字的粗细中途发生改变时
     void on_textFont_changed(int textFont)
     {
+        Q_UNUSED(textFont);
         if(m_flag==1&&m_textElement!=nullptr){
             m_textElement->m_font=m_textFont;
         }

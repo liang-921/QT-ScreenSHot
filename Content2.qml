@@ -11,10 +11,10 @@ Item {
     property alias paint1: paint
 
     //设置画笔颜色，画笔粗细
-    property var painterColor: "red"
+    property string painterColor: "red"
 
     //设置文字颜色，文字粗细
-    property var textpaintColor: "black"
+    property string textpaintColor: "black"
 
     //设置剪切后的图片位置
     property int rectX: 0
@@ -415,7 +415,7 @@ Item {
 
             Connections {
                 target: fullCut
-                onCallImgChanged: {
+                function onCallImgChanged(){
                     img.source = ""
                     img.source = "image://screen"
 
