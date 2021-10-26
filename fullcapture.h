@@ -1,5 +1,5 @@
-#ifndef CAPTURE_H
-#define CAPTURE_H
+#ifndef FULLCAPTURE_H
+#define FULLCAPTURE_H
 
 #include <QObject>
 #include <QQuickWindow>
@@ -7,14 +7,13 @@
 #include <QMainWindow>
 #include "imageprovider.h"
 #include "reccapture.h"
-#include "freecapture.h"
 
 
-class Capture:public QMainWindow
+class FullCapture:public QMainWindow
 {
     Q_OBJECT
 public:
-    explicit Capture(QMainWindow *parent=0);
+    explicit FullCapture(QMainWindow *parent=0);
     //活动窗口截图
 //    void activeCapture();
     ImageProvider *imgProvider;
@@ -26,6 +25,7 @@ public:
     Q_INVOKABLE void delay(int time){
         clock_t now=clock();
         while(clock()-now<time){
+
         }
     }
 
@@ -34,24 +34,19 @@ signals:
     void finishCapture();
 
 public slots:
-    void cutScreen(QPixmap pixmap);
-    void cutNull();
-    void cutNailScreen(QPixmap pixmap);
+    void cutRecScreen(QPixmap pixmap);
+    void cutContinueScreen();
+    void cutNailScreen();
 
     void startActiveCapture();
     void startFullScreen();
     void startRecCapture();
     void startContinueCapture();
     void startNailCapture();
-    void startFreeCapture();
-    void copytoClip();
 
 private:
     QImage m_img;
     RecCapture *m_recCapture;
-    FreeCapture *m_freeCapture;
-    MyLabel *m_nailImage;
 };
 
-
-#endif // CAPTURE_H
+#endif // FULLCAPTURE_H

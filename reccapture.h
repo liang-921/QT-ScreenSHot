@@ -65,7 +65,6 @@ private:
     StretchRectState getStrethRectState(QPoint point);
     void setStretchCursorStyle(StretchRectState stretchRectState);
 
-
     void drawCaptureImage();
     void drawStretchRect();
 
@@ -107,7 +106,6 @@ private:
     QString m_filename;
     //当前时间
     QString strtime;
-
 
     MyLabel *labelimage;
 };

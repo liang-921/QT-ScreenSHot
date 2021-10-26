@@ -47,5 +47,7 @@
         <file>icons/qq.png</file>
         <file>icons/wexin.png</file>
         <file>icons/logo.png</file>
+        <file>icons/recoder.png</file>
+        <file>icons/record.png</file>
     </qresource>
 </RCC>

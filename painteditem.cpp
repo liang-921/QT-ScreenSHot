@@ -13,6 +13,7 @@ PaintedItem::PaintedItem(QQuickItem *parent)
     , m_pen(Qt::black)
     , m_textPen(Qt::black)
     , m_isFill(false)
+    , m_textWidth(0)
     , m_flag(1)
     , m_bEnabled(true)
     , m_bPressed(false)
@@ -71,7 +72,7 @@ void PaintedItem::undo()
     update();
 }
 
-void PaintedItem::save(QString  filePath)
+void PaintedItem::save(QString filePath)
 {
     //    copyPainter=new CopyPaintItem();
     //    copyPainter->CopyPaint(m_elements,m_myImage,m_textElements);
@@ -144,7 +145,7 @@ void PaintedItem::mousePressEvent(QMouseEvent *event)
 void PaintedItem::mouseMoveEvent(QMouseEvent *event)
 {
     //如果m_bEnabled为false或者鼠标没有被按压或者没有m_textElement为空，则不会触发鼠标移动事件
-    if(!m_bEnabled || !m_bPressed||!m_textElement){
+    if(!m_bEnabled || !m_bPressed/*||!m_textElement*/){
         qDebug()<<"不是鼠标移动事件";
         QQuickPaintedItem::mousePressEvent(event);
     }    else    {
@@ -154,6 +155,7 @@ void PaintedItem::mouseMoveEvent(QMouseEvent *event)
         setLastPoint(event->pos());
         if(m_flag==1){//如果是编辑文字
             textMoveEvent();
+            qDebug()<<"鼠标移动时文字为"<<m_textElement->m_text;
         }else if(m_flag==2){
             circleMoveEvent();  //如果是画椭圆
         }else if(m_flag==3){
@@ -193,17 +195,23 @@ void PaintedItem::mouseReleaseEvent(QMouseEvent *event)
 
         update();
 
-        //将鼠标按压事件和鼠标移动事件设为false,将m_textElement置为空
+        //将鼠标按压事件和鼠标移动事件设为false,将m_textElement置为空！！
         m_bPressed=false;
         m_bMoved=false;
+        settextEdit("");
     }
 }
 
 void PaintedItem::textPressEvent()
 {
     //关键点，新建一个文字编辑的类
-    m_textElement=new TextElement(m_pen,m_textPen,m_textFont);
+    m_textElement=new TextElement(m_pen,m_textPen,m_textFont,"");
+    qDebug()<<"新建了一个文字编辑的类";
+    qDebug()<<"文字编辑类的text为："<<m_textElement->m_text;
     m_textElements.push_back(m_textElement);
+
+    //将PaintedItem类中的textEdit的值变为空
+    //目的是更新qml中textedit中text的值
     settextEdit("");
 }
 
@@ -246,37 +254,46 @@ void PaintedItem::textPaintEvent(QPainter *painter)
             QPoint lastPoint=textElement->m_endPoints[endSize-1];
             QPoint startPoint=textElement->m_startPoint;
             QRect rect;
+            QPoint p,p1;
+            // 确定起始点和终止点的位置
             if(startPoint.x()>lastPoint.x()&&startPoint.y()<lastPoint.y()){
                 qDebug()<<"第二种情况";
-                QPoint p(lastPoint.x(),startPoint.y());
-                QPoint p1(startPoint.x(),lastPoint.y());
-                QRect rec(p,p1);
-                rect=rec;
+                p.setX(lastPoint.x());
+                p.setY(startPoint.y());
+                p1.setX(startPoint.x());
+                p1.setY(lastPoint.y());
             }else if(startPoint.x()<lastPoint.x()&&startPoint.y()>lastPoint.y()){
                 qDebug()<<"第一种情况";
-                QPoint p(startPoint.x(),lastPoint.y());
-                QPoint p1(lastPoint.x(),startPoint.y());
-                QRect rec(p,p1);
-                rect=rec;
+                p.setX(startPoint.x());
+                p.setY(lastPoint.y());
+                p1.setX(lastPoint.x());
+                p1.setY(startPoint.y());
             }else if(startPoint.x()>lastPoint.x()&&startPoint.y()>lastPoint.y()){
                 qDebug()<<"第三种情况";
-                QPoint p(lastPoint.x(),lastPoint.y());
-                QPoint p1(startPoint.x(),startPoint.y());
-                QRect rec(p,p1);
-                rect=rec;
+                p.setX(lastPoint.x());
+                p.setY(lastPoint.y());
+                p1.setX(startPoint.x());
+                p1.setY(startPoint.y());
             }else{
-                QRect rec(startPoint,lastPoint);
-                rect=rec;
+                p=startPoint;
+                p1=lastPoint;
             }
 
+            //将起始点和终止点的坐标改变
+            //            m_startPoint=p;
+            //            m_lastPoint=p1;
+            QRect rec(p,p1);
+            rect=rec;
+
+            //设置画笔
             painter->setPen(textElement->m_recPen);
+            //画一个矩形
             painter->drawRect(rect);
-            qDebug()<<"textPaintWidth="<<textElement->m_textPen.width();
+            //设置文字的画笔
             painter->setPen(textElement->m_textPen);
             QFont font;
             font.setPixelSize(textElement->m_font);
             painter->setFont(font);
-            qDebug()<<"m_text:"<<&textElement<<textElement->m_font;
             painter->drawText(rect,textElement->m_text);
         }
     }
@@ -358,7 +375,16 @@ void PaintedItem::textMoveEvent()
     }else{
         setprintPoint(m_startPoint);
     }
+    //文字区域的宽度
+    int width=m_startPoint.x()-m_lastPoint.y();
+    if(width<0){
+        width=-width;
+    }
+    setTextWidth(width);
+    qDebug()<<"文字区域的宽度限制为："<<width;
 
+    //在这边不直接将起始点终止点确定下来
+    //为了实现随着鼠标的移动，图形也在不断移动
     m_textElement->m_startPoint=m_startPoint;
     m_textElement->m_endPoints.push_back(m_lastPoint);
 
@@ -407,8 +433,9 @@ QRectF PaintedItem::undo_backRect(QString flag)
             rect=m_rects[m_rects.size()-1]->m_cutRect;
             return rect;
         }
-
+        return rect;
     }
+    return rect;
 }
 
 void PaintedItem::pressCutSequence()
@@ -416,14 +443,35 @@ void PaintedItem::pressCutSequence()
     m_sequence.push_back(6);
 }
 
-bool PaintedItem::isdoCut()
+bool PaintedItem::isdoCut(QString flag)
 {
     if(m_sequence.size()!=0){
-        if(m_sequence[m_sequence.size()-1]==6){
-            qDebug()<<"m_sequence";
-            return true;
+        if(flag=="undo"){
+            if(m_sequence[m_sequence.size()-1]==6){
+                qDebug()<<"m_sequence";
+                return true;
+            }
+        }
+        if(flag=="clear"){
+            for (int i=0;i<m_sequence.size() ; i++) {
+                if(m_sequence[i]==6){
+                    return true;
+                }
+            }
         }
     }
     return false;
 }
 
+void PaintedItem::destroyRect()
+{
+    m_rects.clear();
+}
+
+void PaintedItem::setTextWidth(int newTextWidth)
+{
+    if (m_textWidth == newTextWidth)
+        return;
+    m_textWidth = newTextWidth;
+    emit textWidthChanged();
+}

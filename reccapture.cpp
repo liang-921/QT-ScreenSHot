@@ -32,8 +32,6 @@ RecCapture::RecCapture(QWidget *parent)
     , m_isMousePress(false)
     , m_currentCaptureState(InitCapture)
 {
-
-
     pixs=new QVector<QPixmap>;
     curtimes = new QVector<QString>;
     m_filename = "/tmp/Cut/";

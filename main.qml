@@ -6,8 +6,10 @@ import QtQuick.Dialogs 1.2
 
 ApplicationWindow{
     id: appRoot
-    title: qsTr("Screen-Shot")
+    title: qsTr("麒麟截屏")
     width: 900; height: 480;
+    minimumHeight: 400;
+    minimumWidth: 600;
     visible: true
 
     Content1 {
@@ -70,13 +72,15 @@ ApplicationWindow{
                             btn.text="注释完成"
 
                         }else{
-
+                            //将修改过后的涂鸦内容保存
+                            content2.paint1.save("file:///tmp/1.jpg")
+                            content1.tempDisplay()
                             btn.text="注释"
                             btn_1.enabled=true
                             btn_2.enabled=true
                             btn_3.enabled=true
                             btn_4.enabled=true
-                            content2.paint1.clear()
+//                            content2.paint1.clear()
                             content1.visible=true
                             content2.visible=false
                         }
@@ -86,7 +90,9 @@ ApplicationWindow{
                     id:btn_1
                     text:qsTr("打印(P)")
                     iconSource: "./icons/print.png"
-
+                    onClicked: {
+                        share.startPrinter()
+                    }
                 }
 
                 Button{
@@ -96,26 +102,55 @@ ApplicationWindow{
                     menu:Menu{
                         Menu{
                             title:qsTr("分享")
+                            //点击分享 图片会自动保存至剪贴板 然后分享
                             iconName:"document-save"
                             MenuItem{
                                 text:qsTr("发送到QQ")
                                 iconSource: "./icons/qq.png"
+                                onTriggered: {
+                                    capture.copytoClip()
+                                    share.shareToQQ()
+                                }
                             }
                             MenuItem{
                                 text:qsTr("发送到微信")
                                 iconSource: "./icons/wexin.png"
+                                onTriggered: {
+                                    capture.copytoClip()
+                                    share.shareToWeChat()
+                                }
                             }
                             MenuItem{
                                 text:qsTr("通过电子邮件发送...")
                                 iconSource: "./icons/mail.png"
+                                onTriggered: {
+                                    capture.copytoClip()
+                                    share.sendMail()
+                                }
                             }
                             MenuItem{
                                 text:qsTr("发送到设备")
                                 iconSource: "./icons/phone.png"
                             }
                         }
-                        MenuItem{
-                            text:qsTr("更多在线服务")
+                        Menu{
+                            title:qsTr("更多")
+                            iconName:"./icons/recoder.png"
+                            MenuItem{
+                                text:qsTr("全屏录制")
+                                iconSource: "./icons/recoder.png"
+                                onTriggered: {
+                                    console.log("开始录屏")
+//                                    record.show()
+                                }
+                            }
+                            MenuItem{
+                                text: qsTr("区域录屏")
+                                iconSource: "./icons/record.png"
+                                onTriggered: {
+                                    area_record.show()
+                                }
+                            }
                         }
                     }
                 }
@@ -124,7 +159,7 @@ ApplicationWindow{
                     iconSource: "./icons/clip.png"
                     text: qsTr("复制到剪贴板")
                     onClicked: {
-                        fullCut.copytoClip();
+                        capture.copytoClip();
                     }
                 }
                 Button{
@@ -140,8 +175,9 @@ ApplicationWindow{
                             onTriggered:{
                                 btn_3.text = text
                                 btn_3.iconName = iconName
-                                dialogs1.fileSaveDialog.selectExisting=false;
-                                dialogs1.saveFileDialog()
+//                                dialogs1.fileSaveDialog.selectExisting=false;
+//                                dialogs1.saveFileDialog()
+//                                content2.paint1.save("")
                             }
                         }
                         MenuItem{
@@ -158,7 +194,6 @@ ApplicationWindow{
             }
         }
     }
-
 
     //打开 对话框导入图片 另存为对话框 保存图片
     Dialogs{

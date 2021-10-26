@@ -11,15 +11,15 @@ Item {
 
     FileDialog{
         id:fileOpen
-        title:"Open A picture"
+        title:"Open A Picture"
         folder: shortcuts.pictures
         nameFilters: [ "Image files (*.png *.jpeg *.jpg)" ]
     }
 
     FileDialog{
         id:fileSave
-        title:"Save A picture"
+        title:"Save A Picture"
         folder: shortcuts.pictures
-        nameFilters: [ "Image files (*.png *.jpeg *.jpg)" ]
+        nameFilters: [ "Image files (*.png *.jpeg *.jpg)"]
     }
 }

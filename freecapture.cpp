@@ -90,8 +90,7 @@ void FreeCapture::mouseReleaseEvent(QMouseEvent *)
     //发送信号 将矩形截取的图片在界面显示
     emit signalCompleteCapture(shotPixmap);
 
-
-    shotPixmap.save("/root/free.jpg");
+    shotPixmap.save("/tmp/1.jpg");
 
     repaint();
     m_pPoints.clear();

@@ -1,15 +1,27 @@
 import QtQuick 2.5
 import QtQuick.Controls 1.4
 import QtQuick.Layouts 1.3
+import QtQuick.Controls.Styles 1.4
 
 Item {
     id: content
+
+    //暂时展示
+    signal tempDisplay()
+
+    property bool counter: false
+
+    onTempDisplay: {
+        console.log("信号处理")
+        //        img.source="file:///tmp/1.jpg"
+        img.source = "image://screen?id="+counter
+        console.log(img.source)
+    }
 
     function selectImage(){
         img.source = arguments[0]
         console.log("来源是：" + img.source)
     }
-
 
     Image {
         id: img
@@ -19,16 +31,19 @@ Item {
         anchors.right: rec2.left
         anchors.rightMargin: 20
         anchors.leftMargin: 20
+        //指定是否应该缓存图像。默认值为true。当处理大图像时，将cache设置为false是很有用的，以确保它们不会以牺牲小的“ui元素”图像为代价进行缓存。
         cache: false
-        source: "file:///tmp/1.jpg"
+        //        source: "file:///tmp/1.jpg"
+        source: "image://screen"
         fillMode: Image.PreserveAspectFit
     }
 
     Connections {
-        target: fullCut
-        function onCallImgChanged(){
-            img.source = ""
-            img.source = "image://screen"
+        target: capture
+        function onCallImgChanged() {
+            counter=!counter
+            //img.source = ""
+            img.source = "image://screen?id="+counter
         }
     }
 
@@ -42,7 +57,7 @@ Item {
             x: 0
             y: 0
             width: 250
-            height: 287
+            height: 289
             implicitHeight: 150
             RowLayout {
                 id: row
@@ -125,9 +140,6 @@ Item {
             ColumnLayout {
                 Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
                 CheckBox {
-                    text: "包含鼠标指针"
-                }
-                CheckBox {
                     id:check_2
                     text: "隐藏当前窗口"
                 }
@@ -137,14 +149,40 @@ Item {
             }
         }
         Button {
-            x: 76
-            y: 425
+            id:shotBtn
+            x: 75
+            y: 369
             width: 100
-            height: 40
-            text: qsTr("截取屏幕")
+            height: 50
+//            anchors.verticalCenter: rec2
             anchors.bottom: parent.bottom
-            anchors.bottomMargin: 30
+            checked: false
+            rotation: 0
+            anchors.bottomMargin: 61
+            text:qsTr("截取屏幕")
             iconSource: "./icons/logo.png"
+//            style:ButtonStyle{
+//                background: Rectangle {
+//                    anchors.fill: parent
+//                    border.width: control.activeFocus ? 2 : 1
+//                        Image {
+//                            id: icons
+//                            source: "./icons/logo.png"
+//                        }
+//                        Text{
+//                            anchors.left: icons
+//                            anchors.centerIn:parent
+//                            font.pixelSize:20
+//                            text:qsTr("截取屏幕")
+//                        }
+//                    radius: 4
+//                    gradient: Gradient {
+//                        GradientStop { position: 0 ; color: control.pressed ? "#ccc" : "#eee" }
+//                        GradientStop { position: 1 ; color: control.pressed ? "#aaa" : "#ccc" }
+//                    }
+//                }
+//            }
+
             onClicked: {
                 countDown.start()
             }
@@ -181,58 +219,58 @@ Item {
                 countDown.stop()
                 if(check_2.checked == true){
                     appRoot.hide()
-                   timer.setTimeout(function(){ fullCut.startFullScreen() },500)
-                   timer.setTimeout(function(){ appRoot.show() },500)
+                    timer.setTimeout(function(){ capture.startFullScreen() },500)
+                    timer.setTimeout(function(){ appRoot.show() },500)
                 }else{
-                    fullCut.startFullScreen()
+                    capture.startFullScreen()
                 }
 
             } else if (spinBox.value < 1 && cbb.currentText === "矩形截取") {
                 countDown.stop()
                 if(check_2.checked == true){
                     appRoot.hide()
-                    timer.setTimeout(function(){ fullCut.startRecCapture() },500)
+                    timer.setTimeout(function(){ capture.startRecCapture() },500)
                 }else{
-                    fullCut.startRecCapture()
+                    capture.startRecCapture()
                 }
             }else if (spinBox.value < 1 && cbb.currentText === "不规则截取") {
                 countDown.stop()
                 if(check_2.checked == true){
                     appRoot.hide()
-                    timer.setTimeout(function(){ fullCut.startFreeCapture() },500)
+                    timer.setTimeout(function(){ capture.startFreeCapture() },500)
                 }else{
-                    fullCut.startFreeCapture()
+                    capture.startFreeCapture()
                 }
             }else if (spinBox.value < 1 && cbb.currentText === "连续截取") {
                 countDown.stop()
                 if(check_2.checked == true){
                     appRoot.hide()
-                     timer.setTimeout(function(){ fullCut.startContinueCapture() },500)
+                    timer.setTimeout(function(){ capture.startContinueCapture() },500)
                 }else{
-                    fullCut.startContinueCapture()
+                    capture.startContinueCapture()
                 }
             } else if(spinBox.value < 1 && cbb.currentText === "钉在桌面"){
                 countDown.stop()
                 if(check_2.checked == true){
                     appRoot.hide()
-                    timer.setTimeout(function(){ fullCut.startNailCapture() },500)
+                    timer.setTimeout(function(){ capture.startNailCapture() },500)
                 }else{
-                    fullCut.startNailCapture()
+                    capture.startNailCapture()
                 }
             } else if(spinBox.value < 1 && cbb.currentText === "活动窗口截取"){
                 countDown.stop()
                 if(check_2.checked == true){
                     appRoot.hide()
-                    timer.setTimeout(function(){ fullCut.startActiveCapture() },500)
+                    timer.setTimeout(function(){ capture.startActiveCapture() },500)
                 }else{
-                    fullCut.startActiveCapture()
+                    capture.startActiveCapture()
                 }
             }
         }
     }
 
     Connections {
-        target: fullCut
+        target: capture
         function onFinishCapture(){
             appRoot.showNormal()
         }

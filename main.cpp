@@ -6,6 +6,9 @@
 
 #include "capture.h"
 #include "painteditem.h"
+#include "share.h"
+//#include "recorddialog.h"
+#include "area_record.h"
 
 int main(int argc, char *argv[]){
 
@@ -16,10 +19,18 @@ int main(int argc, char *argv[]){
     QApplication app(argc, argv);
     QQmlApplicationEngine engine;
 
+    Capture *capture=new Capture();
+    engine.rootContext()->setContextProperty("capture",capture);
+    engine.addImageProvider(QLatin1String("screen"),capture->imgProvider);
 
-    Capture *fullCut=new Capture();
-    engine.rootContext()->setContextProperty("fullCut",fullCut);
-    engine.addImageProvider(QLatin1String("screen"),fullCut->imgProvider);
+    Share *share = new Share();
+    engine.rootContext()->setContextProperty("share",share);
+
+//    RecordDialog *record = new RecordDialog();
+//    engine.rootContext()->setContextProperty("record",record);
+
+    Area_Record *area_record = new Area_Record();
+    engine.rootContext()->setContextProperty("area_record",area_record);
 
     //将涂鸦这个类注册到qml中
     qmlRegisterType<PaintedItem>("qml.Controls", 1, 0, "APaintedItem");

@@ -10,6 +10,7 @@ Item {
 
     property alias paint1: paint
 
+    property bool counter: false
     //设置画笔颜色，画笔粗细
     property string painterColor: "red"
 
@@ -37,19 +38,12 @@ Item {
 
     //重新设置img的大小、位置
     function reUpdate() {
+        paint.destroyRect()
         rectX = 0
         rectY = 0
         rectWidth = img.width
         rectHeight = img.height
-    }
-
-    function cutreUpdate() {
-        cutImage.x = 0
-        cutImage.y = 0
-        cutImage.borderWidth = arguments[0]
-        cutImage.borderHeight = arguments[1]
-        console.log("cutImage " + cutImage.imgWidth, cutImage.imgHeight)
-        console.log("cutBorder " + cutImage.borderWidth, cutImage.borderHeight)
+        rectClick=0
     }
 
     //根据undo或clear取重新设置img特定的大小、位置
@@ -62,7 +56,6 @@ Item {
 
     //左边编辑栏
     Column {
-
         id: leftside
 
         height: parent.height
@@ -195,7 +188,7 @@ Item {
                 height: 40
 
                 onClicked: {
-                    isCut = paint.isdoCut()
+                    isCut = paint.isdoCut("undo")
                     paint.undo()
                     if (isCut) {
                         backImg(paint.undo_backRect("undo"))
@@ -211,9 +204,12 @@ Item {
                 width: 40
                 height: 40
                 onClicked: {
-                    isCut = paint.isdoCut()
+                    isCut=paint.isdoCut("clear")
+                    paint.clear()
+                    if(isCut){
                     backImg(paint.undo_backRect("clear"))
-                    cutreUpdate(img.width, img.height)
+                    }
+                    cutImage.cutreUpdate(img.width, img.height)
                 }
             }
         }
@@ -353,11 +349,29 @@ Item {
                 fillMode: Image.PreserveAspectFit
                 x: rectX
                 y: rectY
-                source: "file:///tmp/1.jpg"
+                source: "image://screen"
+//                source: "file:///tmp/1.jpg"
                 TextEdit {
                     id: textedit
                     x: paint.printPoint.x
                     y: paint.printPoint.y
+                    focus: true
+                    //设置键盘事件
+                    Keys.onPressed: {
+                        if(event.modifiers===Qt.ControlModifier&&event.key===Qt.Key_Z){
+                            console.log("ctrl+z键盘事件被触发")
+                            isCut = paint.isdoCut()
+                            paint.undo()
+                            if (isCut) {
+                                backImg(paint.undo_backRect("undo"))
+                            }
+                        }else{
+                            event.accepted=false
+                        }
+                    }
+
+                    //                    height: paint.rectLength
+                    //将其设置为paint.textEdit的原因是避免上次编辑造成的影响
                     text: paint.textEdit
                     font.pixelSize: paint.textFont
                     color: textpaintColor
@@ -369,22 +383,22 @@ Item {
                             paint.settextEdit(textedit.text)
                             textedit.visible = true
                         }
+                        console.log("qml中文字区域的长度是："+textedit.width)
                     }
                     //当字体颜色改变时
                     onColorChanged: {
-                        if (paint.flag == 1) {
+                        if (paint.flag === 1) {
                             paint.setTextColor(color)
                         }
                     }
                     //当字体的大小改变时
                     onFontChanged: {
-                        if (paint.flag == 1) {
+                        if (paint.flag ===1) {
                             paint.setTextFont(textedit.font.pixelSize)
                         }
                     }
 
                     visible: false
-                    focus: true
                 }
 
                 //涂鸦类
@@ -414,15 +428,16 @@ Item {
             }
 
             Connections {
-                target: fullCut
+                target: capture
                 function onCallImgChanged(){
+
                     img.source = ""
-                    img.source = "image://screen"
+                    img.source = "image://screen?id="+counter
 
                     //每次截取新的图片都需要将之前所裁剪矩形（图片）设置成当前图片的大小
                     reUpdate()
                     //重新设置裁剪框的大小
-                    cutreUpdate(img.width, img.height)
+                    cutImage.cutreUpdate(img.width, img.height)
                 }
             }
         }
