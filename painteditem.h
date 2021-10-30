@@ -53,59 +53,6 @@ class PaintedItem : public QQuickPaintedItem
 
     //当前进行的编辑操作是什么
     Q_PROPERTY(int  flag READ flag WRITE setFlag NOTIFY flagChanged);
-
-    QImage m_myImage;
-    QUrl m_mysource;
-
-    //画各种涂鸦形状的笔
-    QPen m_pen;
-    //写文字的笔
-    QPen m_textPen;
-    //文字的大小
-    int m_textFont;
-    //矩形区域的起始点与终止点
-    QPoint m_startPoint;
-    QPoint m_lastPoint;
-    //输入的文字
-    QString m_textEdit;
-    //键盘事件的起始点
-    QPoint m_printPoint;
-
-    //文字
-    TextElement* m_textElement;
-    QVector<TextElement*> m_textElements;
-
-    //是否要对图形进行颜色填充
-    bool m_isFill;
-
-    //椭圆
-    CircleElement* m_circleElement;
-    QVector<CircleElement*> m_circleElements;
-
-    //矩形
-    RectElement* m_rectElement;
-    QVector<RectElement*> m_rectElements;
-
-    //直线
-    LineElement* m_lineElement;
-    QVector<LineElement*> m_lineElements;
-
-    //涂鸦
-    Doodle *m_doodleElement;
-    QVector<Doodle*> m_doodleElements;
-
-//    //剪切矩形
-//    CutRectElement* m_rectCut;
-    QVector<CutRectElement*> m_rects;
-//    QRectF *m_rect;
-//    QVector<QRectF*> m_rects;
-
-    //文字区域的宽度
-    int m_textWidth;
-
-    //当前所进行的编辑操作，1是文字，2是椭圆,3是矩形，4是直线,5是涂鸦
-    int m_flag;
-
 public:
     PaintedItem(QQuickItem *parent = 0);
     ~PaintedItem();
@@ -345,6 +292,66 @@ protected:
     bool m_bEnabled;
     bool m_bPressed;
     bool m_bMoved;
+
+private:
+    QImage m_myImage;
+    QUrl m_mysource;
+
+    //马赛克
+//    RectElement* m_mosaicElement;
+//    QVector<MosaicElement*> m_mosaicElements;
+
+    //画各种涂鸦形状的笔
+    QPen m_pen;
+    //写文字的笔
+    QPen m_textPen;
+    //文字的大小
+    int m_textFont;
+    //矩形区域的起始点与终止点
+    QPoint m_startPoint;
+    QPoint m_lastPoint;
+    //输入的文字
+    QString m_textEdit;
+    //键盘事件的起始点
+    QPoint m_printPoint;
+
+
+    //文字
+    TextElement* m_textElement;
+    QVector<TextElement*> m_textElements;
+
+    //是否要对图形进行颜色填充
+    bool m_isFill;
+
+    //椭圆
+    CircleElement* m_circleElement;
+    QVector<CircleElement*> m_circleElements;
+
+    //矩形
+    RectElement* m_rectElement;
+    QVector<RectElement*> m_rectElements;
+
+    //直线
+    LineElement* m_lineElement;
+    QVector<LineElement*> m_lineElements;
+
+    //涂鸦
+    Doodle *m_doodleElement;
+    QVector<Doodle*> m_doodleElements;
+
+//    //剪切矩形
+//    CutRectElement* m_rectCut;
+    QVector<CutRectElement*> m_rects;
+//    QRectF *m_rect;
+//    QVector<QRectF*> m_rects;
+
+    //文字区域的宽度
+    int m_textWidth;
+
+    //当前所进行的编辑操作，1是文字，2是椭圆,3是矩形，4是直线,5是涂鸦
+    int m_flag;
+
+//     RectElement* m_mosaicElement;
 };
 
 #endif // PAINTEDITEM_H

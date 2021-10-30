@@ -78,10 +78,10 @@ Area_Record::Area_Record(QWidget *parent) : QDialog(parent)
     btnStart->setText("开始");
     btnClose->setText("关闭");
 
-    connect(btnStart, &QPushButton::clicked, this, &Area_Record::record);
-    connect(txtWidth, &QLineEdit::editingFinished, this, &Area_Record::resizeForm);
-    connect(txtHeight, &QLineEdit::editingFinished, this, &Area_Record::resizeForm);
-    connect(btnClose, &QPushButton::clicked, this, &Area_Record::closeAll);
+    connect(btnStart, SIGNAL(clicked()), this, SLOT(record()));
+    connect(txtWidth, SIGNAL(editingFinished()), this, SLOT(resizeForm()));
+    connect(txtHeight, SIGNAL(editingFinished()), this, SLOT(resizeForm()));
+    connect(btnClose, SIGNAL(clicked()), this, SLOT(closeAll()));
 
     borderWidth = 1;
     bgColor = QColor("grey");
@@ -117,6 +117,7 @@ Area_Record::Area_Record(QWidget *parent) : QDialog(parent)
 void Area_Record::closeAll()
 {
     close();
+    emit finish();
 }
 
 void Area_Record::record()

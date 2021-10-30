@@ -10,6 +10,7 @@ Item {
 
     property alias paint1: paint
 
+    property alias img_paint:img
     property bool counter: false
     //设置画笔颜色，画笔粗细
     property string painterColor: "red"
@@ -53,6 +54,7 @@ Item {
         rectWidth = arguments[0].width
         rectHeight = arguments[0].height
     }
+
 
     //左边编辑栏
     Column {
@@ -133,6 +135,8 @@ Item {
                     paint.enabled = true
                     console.log("1")
                     paint.flag = 1
+                    textedit.focus=true
+//                    img.focus=true
                 }
             }
 
@@ -177,6 +181,28 @@ Item {
                             paint.flag = 4
                         }
                     }
+                }
+            }
+
+            //马赛克
+            Button{
+                id:btn_mosaic
+                iconSource: "qrc:/icons/mosaic.png"
+                width: 40
+                height: 40
+                onClicked: {
+                    filter.mosaic()
+                }
+            }
+
+            //滤镜
+            Button{
+                id:btn_filter
+                iconSource: "qrc:/icons/filter.png"
+                width: 40
+                height: 40
+                onClicked: {
+                    filter.show()
                 }
             }
 
@@ -355,7 +381,7 @@ Item {
                     id: textedit
                     x: paint.printPoint.x
                     y: paint.printPoint.y
-                    focus: true
+                    focus: false
                     //设置键盘事件
                     Keys.onPressed: {
                         if(event.modifiers===Qt.ControlModifier&&event.key===Qt.Key_Z){

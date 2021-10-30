@@ -77,6 +77,25 @@ public:
     bool m_isFill;
 };
 
+//马赛克
+//class MosaicElement{
+//public:
+//    MosaicElement(){}
+//    MosaicElement(const QPen &pen,const bool isFill):
+//        m_pen(pen),
+//        m_isFill(isFill)
+//    {}
+
+//    //矩形区域的起始点
+//    QPoint m_startPoint;
+//    //矩形区域的终止点，用vector容器装可以确保当鼠标移动时，矩形区域也随之移动
+//    std::vector<QPoint> m_endPoints;
+//    //矩形边框的画笔
+//    QPen m_pen;
+//    //是否要填充颜色
+//    bool m_isFill;
+//};
+
 //直线
 class LineElement{
 public:

@@ -48,7 +48,8 @@ public:
 
     Gif gif;
     Gif::GifWriter *gifWriter;
-
+signals:
+    void finish();
 public slots:
     void closeAll();
     void record();

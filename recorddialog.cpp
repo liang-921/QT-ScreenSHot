@@ -26,15 +26,14 @@ RecordDialog::RecordDialog(QWidget *parent) :
                                "QPushButton:pressed{background-color:rgb(204, 228, 247);"
                                "border-style: inset;}");
     ui->stopBt->setStyleSheet("QPushButton{"
-                               "border:2px groove gray;border-radius:10px;"
-                               "padding:2px 4px;border-style: outset;}"
-                               "QPushButton:hover{background-color:rgb(229, 241, 251); color: black;}"
-                               "QPushButton:pressed{background-color:rgb(204, 228, 247);"
-                               "border-style: inset;}");
-    connect(ui->startBt,SIGNAL(clicked()),
-            this,SLOT(start()));
-    connect(ui->stopBt,SIGNAL(clicked()),
-            this,SLOT(stop()));
+                              "border:2px groove gray;border-radius:10px;"
+                              "padding:2px 4px;border-style: outset;}"
+                              "QPushButton:hover{background-color:rgb(229, 241, 251); color: black;}"
+                              "QPushButton:pressed{background-color:rgb(204, 228, 247);"
+                              "border-style: inset;}");
+    connect(ui->startBt,SIGNAL(clicked()),this,SLOT(start()));
+    connect(ui->stopBt,SIGNAL(clicked()),this,SLOT(stop()));
+    //    connect(this,SIGNAL(close()),this,SLOT(closeAll()));
 }
 
 RecordDialog::~RecordDialog()
@@ -76,14 +75,33 @@ void RecordDialog::sleep(unsigned int msec)
         QCoreApplication::processEvents(QEventLoop::AllEvents, 100);
 }
 
+void RecordDialog::closeEvent(QCloseEvent *e)
+{
+     Q_UNUSED(e);
+    emit finishRecord();
+}
+
+void RecordDialog::startRecord()
+{
+    Area_Record *area_record = new Area_Record();
+    area_record->show();
+    connect(area_record,SIGNAL(finish()),this,SLOT(closeAll()));
+}
+
 void RecordDialog::stop()
 {
 
     this->close();
+    emit finishRecord();
     sleep(4000);
     //关闭录制
     qDebug()<<"关闭录制";
     exec("kill -9 $(ps -ef|grep ffmpeg|grep -v grep|awk '{print $2}')");
-
     //    exec("ps aux | grep ffmpeg | grep -v grep | awk '{print $2}' | sudo xargs kill -9");
+}
+
+void RecordDialog::closeAll()
+{
+    close();
+    emit finishRecord();
 }

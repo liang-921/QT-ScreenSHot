@@ -7,8 +7,9 @@
 #include "capture.h"
 #include "painteditem.h"
 #include "share.h"
-//#include "recorddialog.h"
-#include "area_record.h"
+#include "recorddialog.h"
+#include "filter.h"
+//#include "mosaic.h"
 
 int main(int argc, char *argv[]){
 
@@ -19,18 +20,23 @@ int main(int argc, char *argv[]){
     QApplication app(argc, argv);
     QQmlApplicationEngine engine;
 
+    //屏幕截图
     Capture *capture=new Capture();
     engine.rootContext()->setContextProperty("capture",capture);
     engine.addImageProvider(QLatin1String("screen"),capture->imgProvider);
-
+    //分享
     Share *share = new Share();
     engine.rootContext()->setContextProperty("share",share);
+    //录制屏幕
+    RecordDialog *record = new RecordDialog();
+    engine.rootContext()->setContextProperty("record",record);
 
-//    RecordDialog *record = new RecordDialog();
-//    engine.rootContext()->setContextProperty("record",record);
+    //滤镜/*
+    Filter *filter = new Filter();
+    engine.rootContext()->setContextProperty("filter",filter);
 
-    Area_Record *area_record = new Area_Record();
-    engine.rootContext()->setContextProperty("area_record",area_record);
+//    Mosaic *mosaic = new Mosaic();
+//    engine.rootContext()->setContextProperty("mosaic",mosaic);
 
     //将涂鸦这个类注册到qml中
     qmlRegisterType<PaintedItem>("qml.Controls", 1, 0, "APaintedItem");

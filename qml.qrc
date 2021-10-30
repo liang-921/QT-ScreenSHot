@@ -17,10 +17,7 @@
         <file>icons/kdenlive-composite.png</file>
         <file>icons/paint.png</file>
         <file>icons/rectangle.png</file>
-        <file>icons/shapes.svg</file>
-        <file>icons/text.svg</file>
         <file>icons/textcolor.png</file>
-        <file>icons/tools-wizard.svg</file>
         <file>icons/width.png</file>
         <file>Content2.qml</file>
         <file>icons/undo.png</file>
@@ -49,5 +46,10 @@
         <file>icons/logo.png</file>
         <file>icons/recoder.png</file>
         <file>icons/record.png</file>
+        <file>icons/mosaic.png</file>
+        <file>icons/filter.png</file>
+        <file>icons/face-sad.png</file>
+        <file>Message.qml</file>
+        <file>icons/true.png</file>
     </qresource>
 </RCC>

@@ -3,6 +3,7 @@
 
 #include <QDialog>
 #include <QProcess>
+#include "area_record.h"
 
 namespace Ui {
 class RecordDialog;
@@ -20,8 +21,12 @@ private:
     //exec对命令行参数进行解析
     void exec(const char* cmd);
     void sleep(unsigned int msec);
-
+    void closeEvent(QCloseEvent *e);
+signals:
+    void finishRecord();
 public slots:
+    void startRecord();
+    void closeAll();
     void start();
     void stop();
 

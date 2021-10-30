@@ -14,9 +14,11 @@ HEADERS += \
     capture.h \
     copypaintitem.h \
     elementgroup.h \
+    filter.h \
     freecapture.h \
     gif.h \
     imageprovider.h \
+    mosaic.h \
     mylabel.h \
     painteditem.h \
     reccapture.h \
@@ -27,8 +29,10 @@ SOURCES += \
     area_record.cpp \
     capture.cpp \
     copypaintitem.cpp \
+    filter.cpp \
     freecapture.cpp \
     main.cpp \
+    mosaic.cpp \
     mylabel.cpp \
     painteditem.cpp \
     reccapture.cpp \
@@ -59,4 +63,6 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
 
 FORMS += \
+    filter.ui \
+    mosaic.ui \
     recorddialog.ui

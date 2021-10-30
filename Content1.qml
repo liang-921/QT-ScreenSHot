@@ -161,6 +161,10 @@ Item {
             anchors.bottomMargin: 61
             text:qsTr("截取屏幕")
             iconSource: "./icons/logo.png"
+            Shortcut{
+                sequence: "Ctrl+Print"
+                onActivated: shotBtn.clicked()
+            }
 //            style:ButtonStyle{
 //                background: Rectangle {
 //                    anchors.fill: parent
