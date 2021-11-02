@@ -22,7 +22,7 @@ void Capture::startActiveCapture()
 
     //得到窗口的wid,string类型的16进制
     std::string  string=exec(" xprop -root | awk '/_NET_ACTIVE_WINDOW\\(WINDOW\\)/{print $NF}'").c_str();
-    char *c=string.data();
+ const char *c=string.data();
     char *stop;
     WId id=std::strtol(c,&stop,16);
 
@@ -158,9 +158,26 @@ void Capture::startFreeCapture()
 
 void Capture::copytoClip()
 {
-
     QImage img;
     img.load("/tmp/1.jpg");
     QApplication::clipboard()->setImage(img);
+}
+
+void Capture::captureLongPicture()
+{
+    m_myWidget=new MyWidget();
+    connect(m_myWidget,&MyWidget::closewidget,
+            this,&Capture::stopLongcapture);
+    m_myWidget->showFullScreen();
+}
+
+void Capture::stopLongcapture(QImage img)
+{
+    imgProvider->img=img;
+    img.save("/tmp/1.jpg");
+
+    //发送信号 将矩形截取的图片在界面显示
+    emit callImgChanged();
+    emit finishCapture();
 }
 

@@ -97,6 +97,9 @@ Item {
                         ListElement{
                             text:"钉在桌面"
                         }
+                        ListElement{
+                            text:"长截图"
+                        }
                     }
                 }
             }
@@ -268,6 +271,12 @@ Item {
                     timer.setTimeout(function(){ capture.startActiveCapture() },500)
                 }else{
                     capture.startActiveCapture()
+                }
+            }else if(spinBox.value < 1 && cbb.currentText === "长截图"){
+                countDown.stop()
+                if(check_2.checked == true){
+                    appRoot.hide()
+                    timer.setTimeout(function(){capture.captureLongPicture()} ,1000)
                 }
             }
         }

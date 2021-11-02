@@ -136,7 +136,6 @@ Item {
                     console.log("1")
                     paint.flag = 1
                     textedit.focus=true
-//                    img.focus=true
                 }
             }
 

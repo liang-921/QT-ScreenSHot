@@ -349,7 +349,7 @@ private:
     int m_textWidth;
 
     //当前所进行的编辑操作，1是文字，2是椭圆,3是矩形，4是直线,5是涂鸦
-    int m_flag;
+    int m_flag=0;
 
 //     RectElement* m_mosaicElement;
 };

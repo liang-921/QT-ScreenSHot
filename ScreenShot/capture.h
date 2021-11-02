@@ -8,6 +8,7 @@
 #include "imageprovider.h"
 #include "reccapture.h"
 #include "freecapture.h"
+#include "mywidget.h"
 
 
 class Capture:public QMainWindow
@@ -19,7 +20,7 @@ public:
 //    void activeCapture();
     ImageProvider *imgProvider;
 
-    //利用命令行参数获取顶层窗口的wid，exec对命令汗参数进行解析
+    //利用命令行参数获取顶层窗口的wid，exec对命令行参数进行解析
     std::string exec(const char* cmd);
 
 
@@ -46,11 +47,17 @@ public slots:
     void startFreeCapture();
     void copytoClip();
 
+    void captureLongPicture();
+
+    void stopLongcapture(QImage img);
+
+
 private:
     QImage m_img;
     RecCapture *m_recCapture;
     FreeCapture *m_freeCapture;
     MyLabel *m_nailImage;
+    MyWidget *m_myWidget;
 };
 
 
